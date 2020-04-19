@@ -1,4 +1,4 @@
-from random import random
+import random
 
 from person import Person
 
@@ -14,7 +14,7 @@ class Propagator:
         infector: Person
         for infector in self.people:
             self.propagate_infectors(infector)
-            if self.mortality > 0.5:
+            if self.mortality > random.random():
                 infector.dead = True
             self.increment_infection_time(infector)
             self.recover(infector)
@@ -36,5 +36,5 @@ class Propagator:
     def propagate_infection(self, infector: Person):
         infectee: Person
         for infectee in infector.contacts:
-            if not infectee.recovered and self.rate > random():
+            if not infectee.recovered and self.rate > random.random():
                 infectee.infected = True

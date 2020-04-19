@@ -1,3 +1,4 @@
+from random import random
 from unittest import TestCase, mock
 
 from person import Person
@@ -79,6 +80,16 @@ class Test(TestCase):
     def all_infected_die_with_mortality_1(self):
         person = Person()
         propagator = Propagator([person], mortality=1.0)
+
+        propagator.step()
+
+        self.assertTrue(person.dead)
+
+    @mock.patch("random.random")
+    def test_all_infected_die_with_mortality_one_tenth_and_rng_0(self, mock_random):
+        mock_random.return_value = 0.0
+        person = Person()
+        propagator = Propagator([person], mortality=0.1)
 
         propagator.step()
 
