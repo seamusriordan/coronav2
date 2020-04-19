@@ -56,3 +56,13 @@ class Test(TestCase):
         propagator.step()
 
         self.assertFalse(infected_person.infected)
+
+    def test_infected_given_infection_length_3_is_still_infected_after_2_steps(self):
+        infected_person = Person()
+        infected_person.infected = True
+        propagator = Propagator([infected_person], infection_length=3)
+
+        propagator.step()
+        propagator.step()
+
+        self.assertTrue(infected_person.infected)
