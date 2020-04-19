@@ -1,4 +1,3 @@
-from random import random
 from unittest import TestCase, mock
 
 from person import Person
@@ -53,8 +52,7 @@ class Test(TestCase):
         infected_person.infected = True
         propagator = Propagator([infected_person], infection_length=2)
 
-        propagator.step()
-        propagator.step()
+        propagator.step_n(2)
 
         self.assertFalse(infected_person.infected)
 
@@ -63,8 +61,7 @@ class Test(TestCase):
         infected_person.infected = True
         propagator = Propagator([infected_person], infection_length=3)
 
-        propagator.step()
-        propagator.step()
+        propagator.step_n(2)
 
         self.assertTrue(infected_person.infected)
 
@@ -72,8 +69,7 @@ class Test(TestCase):
         self.two_in_contact[0].infected = True
         propagator = Propagator(self.two_in_contact, rate=1.0, infection_length=1)
 
-        propagator.step()
-        propagator.step()
+        propagator.step_n(2)
 
         self.assertFalse(self.two_in_contact[0].infected)
 

@@ -10,6 +10,10 @@ class Propagator:
         self.infection_length = infection_length
         self.mortality = mortality
 
+    def step_n(self, n_steps):
+        for _ in range(n_steps):
+            self.step()
+
     def step(self):
         for person in self.people:
             if person.infected:
