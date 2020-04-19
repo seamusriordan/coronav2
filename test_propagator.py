@@ -37,3 +37,12 @@ class Test(TestCase):
         propagator.step()
 
         self.assertTrue(self.two_in_contact[1].infected)
+
+    def test_propagator_none_in_contact_do_not_infect(self):
+        people = [Person(), Person()]
+        people[0].infected = True
+        propagator = Propagator(people, rate=1.0)
+
+        propagator.step()
+
+        self.assertFalse(people[1].infected)

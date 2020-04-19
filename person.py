@@ -1,5 +1,4 @@
 class Person:
-    def __init__(self) -> None:
-        super().__init__()
+    def __init__(self):
         self.infected = False
-        self.contacts = []
+        self.contacts: [Person] = []
