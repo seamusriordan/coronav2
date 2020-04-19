@@ -11,28 +11,28 @@ class Propagator:
         self.mortality = mortality
 
     def step(self):
-        infector: Person
-        for infector in self.people:
-            if infector.infected:
-                if self.mortality > random.random():
-                    infector.dead = True
-                self.propagate_infectors(infector)
-                self.increment_infection_time(infector)
-                self.recover(infector)
+        for person in self.people:
+            if person.infected:
+                self.step_infection(person)
+
+    def step_infection(self, infected):
+        if self.mortality > random.random():
+            infected.dead = True
+        self.propagate_infectors(infected)
+        self.increment_infection_time(infected)
+        self.recover(infected)
 
     @staticmethod
-    def increment_infection_time(infector):
-        if infector.infected:
-            infector.time_infected += 1
+    def increment_infection_time(infected):
+        infected.time_infected += 1
 
-    def recover(self, infector):
-        if infector.infected and infector.time_infected >= self.infection_length:
-            infector.infected = False
-            infector.recovered = True
+    def recover(self, infected):
+        if infected.time_infected >= self.infection_length:
+            infected.infected = False
+            infected.recovered = True
 
     def propagate_infectors(self, infector):
-        if infector.infected:
-            self.propagate_infection(infector)
+        self.propagate_infection(infector)
 
     def propagate_infection(self, infector: Person):
         infectee: Person
