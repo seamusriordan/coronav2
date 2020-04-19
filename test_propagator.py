@@ -104,3 +104,36 @@ class Test(TestCase):
         propagator.step()
 
         self.assertTrue(person.dead)
+
+    @mock.patch("random.random")
+    def test_those_that_die_are_not_considered_infected(self, mock_random):
+        mock_random.return_value = 0.0
+        person = Person()
+        person.infected = True
+        propagator = Propagator([person], mortality=1.0)
+
+        propagator.step()
+
+        self.assertFalse(person.infected)
+
+    @mock.patch("random.random")
+    def test_the_dead_do_not_infect(self, mock_random):
+        mock_random.return_value = 0.0
+        self.two_in_contact[0].dead = True
+        self.two_in_contact[0].infected = True
+        propagator = Propagator(self.two_in_contact, mortality=1.0, rate=1.0)
+
+        propagator.step()
+
+        self.assertFalse(self.two_in_contact[1].infected)
+
+    @mock.patch("random.random")
+    def test_those_that_die_do_not_recover(self, mock_random):
+        mock_random.return_value = 0.0
+        person = Person()
+        person.infected = True
+        propagator = Propagator([person], mortality=1.0, infection_length=1)
+
+        propagator.step()
+
+        self.assertFalse(person.recovered)
