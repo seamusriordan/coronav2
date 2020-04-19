@@ -66,3 +66,12 @@ class Test(TestCase):
         propagator.step()
 
         self.assertTrue(infected_person.infected)
+
+    def test_recovered_do_not_get_reinfected(self):
+        self.two_in_contact[0].infected = True
+        propagator = Propagator(self.two_in_contact, rate=1.0, infection_length=1)
+
+        propagator.step()
+        propagator.step()
+
+        self.assertFalse(self.two_in_contact[0].infected)

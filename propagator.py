@@ -24,6 +24,7 @@ class Propagator:
     def recover(self, infector):
         if infector.infected and infector.time_infected >= self.infection_length:
             infector.infected = False
+            infector.recovered = True
 
     def propagate_infectors(self, infector):
         if infector.infected:
@@ -32,5 +33,5 @@ class Propagator:
     def propagate_infection(self, infector: Person):
         infectee: Person
         for infectee in infector.contacts:
-            if self.rate > random():
+            if not infectee.recovered and self.rate > random():
                 infectee.infected = True
