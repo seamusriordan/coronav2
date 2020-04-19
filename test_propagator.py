@@ -76,7 +76,7 @@ class Test(TestCase):
     def test_all_infected_die_with_mortality_1(self):
         person = Person()
         person.infected = True
-        propagator = Propagator([person], mortality=1.0)
+        propagator = Propagator([person], daily_mortality=1.0)
 
         propagator.step()
 
@@ -84,7 +84,7 @@ class Test(TestCase):
 
     def test_not_infected_with_mortality_1_dont_die(self):
         person = Person()
-        propagator = Propagator([person], mortality=1.0)
+        propagator = Propagator([person], daily_mortality=1.0)
 
         propagator.step()
 
@@ -95,7 +95,7 @@ class Test(TestCase):
         mock_random.return_value = 0.0
         person = Person()
         person.infected = True
-        propagator = Propagator([person], mortality=0.1)
+        propagator = Propagator([person], daily_mortality=0.1)
 
         propagator.step()
 
@@ -106,7 +106,7 @@ class Test(TestCase):
         mock_random.return_value = 0.0
         person = Person()
         person.infected = True
-        propagator = Propagator([person], mortality=1.0)
+        propagator = Propagator([person], daily_mortality=1.0)
 
         propagator.step()
 
@@ -117,7 +117,7 @@ class Test(TestCase):
         mock_random.return_value = 0.0
         self.two_in_contact[0].dead = True
         self.two_in_contact[0].infected = True
-        propagator = Propagator(self.two_in_contact, mortality=1.0, rate=1.0)
+        propagator = Propagator(self.two_in_contact, daily_mortality=1.0, rate=1.0)
 
         propagator.step()
 
@@ -128,8 +128,70 @@ class Test(TestCase):
         mock_random.return_value = 0.0
         person = Person()
         person.infected = True
-        propagator = Propagator([person], mortality=1.0, infection_length=1)
+        propagator = Propagator([person], daily_mortality=1.0, infection_length=1)
 
         propagator.step()
 
         self.assertFalse(person.recovered)
+
+    def test_results_has_length_of_steps_with_one_step(self):
+        propagator = Propagator(self.two_in_contact)
+
+        propagator.step()
+
+        self.assertEqual(1, len(propagator.results.day))
+
+    def test_results_has_length_of_steps_with_three_steps(self):
+        propagator = Propagator(self.two_in_contact)
+
+        n_steps = 3
+        propagator.step_n(n_steps)
+
+        self.assertEqual(n_steps, len(propagator.results.day))
+
+    def test_results_days_are_consecutive_for_four_days(self):
+        propagator = Propagator(self.two_in_contact)
+
+        n_steps = 4
+        propagator.step_n(n_steps)
+
+        self.assertEqual([0, 1, 2, 3], propagator.results.day)
+
+    def test_results_infected_count_infected(self):
+        self.two_in_contact[0].infected = True
+        self.two_in_contact[1].infected = True
+
+        propagator = Propagator(self.two_in_contact, infection_length=1)
+
+        propagator.step_n(2)
+
+        self.assertEqual([2, 0], propagator.results.infected_count)
+
+    def test_results_recovered_count_recovered_with_two(self):
+        self.two_in_contact[0].infected = True
+        self.two_in_contact[1].infected = True
+
+        propagator = Propagator(self.two_in_contact, infection_length=1, daily_mortality=0)
+
+        propagator.step_n(2)
+
+        self.assertEqual([0, 2], propagator.results.recovered_count)
+
+    def test_results_recovered_count_recovered(self):
+        self.two_in_contact[0].infected = True
+
+        propagator = Propagator(self.two_in_contact, infection_length=1, daily_mortality=0)
+
+        propagator.step_n(2)
+
+        self.assertEqual([0, 1], propagator.results.recovered_count)
+
+    def test_results_dead_count_dead(self):
+        self.two_in_contact[0].infected = True
+        self.two_in_contact[1].dead = True
+
+        propagator = Propagator(self.two_in_contact, infection_length=10, daily_mortality=1.0)
+
+        propagator.step_n(2)
+
+        self.assertEqual([1, 2], propagator.results.dead_count)
