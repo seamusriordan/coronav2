@@ -13,11 +13,12 @@ class Propagator:
     def step(self):
         infector: Person
         for infector in self.people:
-            self.propagate_infectors(infector)
             if self.mortality > random.random():
                 infector.dead = True
-            self.increment_infection_time(infector)
-            self.recover(infector)
+            if infector.infected:
+                self.propagate_infectors(infector)
+                self.increment_infection_time(infector)
+                self.recover(infector)
 
     @staticmethod
     def increment_infection_time(infector):

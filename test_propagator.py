@@ -77,8 +77,9 @@ class Test(TestCase):
 
         self.assertFalse(self.two_in_contact[0].infected)
 
-    def all_infected_die_with_mortality_1(self):
+    def test_all_infected_die_with_mortality_1(self):
         person = Person()
+        person.infected = True
         propagator = Propagator([person], mortality=1.0)
 
         propagator.step()
@@ -89,6 +90,7 @@ class Test(TestCase):
     def test_all_infected_die_with_mortality_one_tenth_and_rng_0(self, mock_random):
         mock_random.return_value = 0.0
         person = Person()
+        person.infected = True
         propagator = Propagator([person], mortality=0.1)
 
         propagator.step()
