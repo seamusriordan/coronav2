@@ -13,9 +13,9 @@ class Propagator:
     def step(self):
         infector: Person
         for infector in self.people:
-            if self.mortality > random.random():
-                infector.dead = True
             if infector.infected:
+                if self.mortality > random.random():
+                    infector.dead = True
                 self.propagate_infectors(infector)
                 self.increment_infection_time(infector)
                 self.recover(infector)

@@ -86,6 +86,14 @@ class Test(TestCase):
 
         self.assertTrue(person.dead)
 
+    def test_not_infected_with_mortality_1_dont_die(self):
+        person = Person()
+        propagator = Propagator([person], mortality=1.0)
+
+        propagator.step()
+
+        self.assertFalse(person.dead)
+
     @mock.patch("random.random")
     def test_all_infected_die_with_mortality_one_tenth_and_rng_0(self, mock_random):
         mock_random.return_value = 0.0
