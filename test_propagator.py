@@ -75,3 +75,11 @@ class Test(TestCase):
         propagator.step()
 
         self.assertFalse(self.two_in_contact[0].infected)
+
+    def all_infected_die_with_mortality_1(self):
+        person = Person()
+        propagator = Propagator([person], mortality=1.0)
+
+        propagator.step()
+
+        self.assertTrue(person.dead)

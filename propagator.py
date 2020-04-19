@@ -4,15 +4,18 @@ from person import Person
 
 
 class Propagator:
-    def __init__(self, people: [Person], rate=0.0, infection_length=10):
+    def __init__(self, people: [Person], rate=0.0, infection_length=10, mortality=0.0):
         self.people: [Person] = people
         self.rate = rate
         self.infection_length = infection_length
+        self.mortality = mortality
 
     def step(self):
         infector: Person
         for infector in self.people:
             self.propagate_infectors(infector)
+            if self.mortality > 0.5:
+                infector.dead = True
             self.increment_infection_time(infector)
             self.recover(infector)
 
